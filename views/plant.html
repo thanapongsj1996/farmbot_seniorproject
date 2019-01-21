@@ -2,36 +2,48 @@
 <html lang="en">
 
 <head>
+  <!-- Meta -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Style -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
+
   <title>Farm Bot</title>
+
 </head>
 
 <body onload="show_data()">
 
+  <!-- Pagetitle -->
   <div class="jumbotron jumbotron-fluid" style="padding: 20px; text-align: center">
     <div class="container">
       <h1 class="display-4 ">Auto Farming Robot</h1>
-      <h3>[ver : 0.4]</h3>
+      <h3>[ver : 0.5]</h3>
       <hr class="my-4">
-      <p>Display Fruit_Position and Water_Position</p>
-      <p>The data will be sent to NETPIE!</p>
-      <p>14/12/2018</p>
+      <p>Add JSON data and submit button</p>
+      <p>Now we have the correctly position of fruits and water area!</p>
+      <p>22/01/2019</p>
     </div>
   </div>
+  <!-- /Pagetitle -->
 
+
+  <!-- Working Space -->
   <div class='container' style="margin-bottom:50px;">
 
+    <!-- Image Bar -->
     <div class="col-md-8 offset-md-2 imgBox">
       <img src="img/apple.png" id="apple" onclick="imgTypes('apple')" class="imgBar">
       <img src="img/banana.png" id="banana" onclick="imgTypes('banana')" class="imgBar">
       <img src="img/lettuce.png" id="lettuce" onclick="imgTypes('lettuce')" class="imgBar">
       <img src="img/watering.png" id="watering" onclick="imgTypes('watering')" class="imgBar">
       <img src="img/wateringAll.png" id="watering_all" onclick="imgTypes('watering_all')" class="imgBar">
+      <img src="img/wateringAll.png" id="submit" onclick="imgTypes('submit')" class="imgBar">
     </div>
+    <!-- /Image Bar -->
 
+    <!-- Planting Space -->
     <div class="col-md-6 offset-md-3">
       <% for ( var j = 1, m = 0 ; j<=4 ; j++) { %>
       <div class='row' style="margin:0">
@@ -40,160 +52,216 @@
         <% m++ } %>
       </div>
       <% } %>
-
-      <div>
-        <br>
-        <div><u>Fruit Position</u></div>
-        <div id='Array_fruits'></div>
-        <div><u>Water Position</u></div>
-        <div id='Array_water'></div>
-      </div>
     </div>
+    <!-- /Planting Space -->
+
+    <!-- Monitoring Data -->
+    <div class="col-md-6 offset-md-3">
+      <br>
+      <div><u>Fruit Position</u></div>
+      <div id='Array_fruits'></div>
+      <div><u>Water Position</u></div>
+      <div id='Array_water'></div>
+      <div><u>Fruit Position JSON</u></div>
+      <div id='showFruitJSON'></div>
+      <div><u>Water Position JSON</u></div>
+      <div id='showWaterJSON'></div>
+    </div>
+    <!-- Monitoring Data -->
 
   </div>
+  <!-- /Working Space -->
 
-  <script>
+  <footer style="text-align: center; background-color: #DCDCDC; color: black">
+    <div style="padding: 20px">
+      <i>by Thanapong Somjai (Boy)</i><br>
+      <i>Faculty of Engineering, Chulalongkorn University.</i>
+    </div>
+  </footer>
 
-    var numSpace = 16
-    var waterStatus = false
-    var fruitPosition = []
-    var waterPosition = []
-    for (var i = 0; i <= numSpace - 1; i++) {
-      fruitPosition.push(null)
-      waterPosition.push(0)
-    }
-
-    show_data = () => {
-      document.getElementById("Array_fruits").innerHTML = fruitPosition
-      document.getElementById("Array_water").innerHTML = waterPosition
-    }
-
-    imgTypes = (type) => {
-      this.imgType = type
-      if (imgType == 'apple') {
-        document.getElementById("apple").style.border = "thin solid #0000FF"
-        document.getElementById("banana").style.border = null
-        document.getElementById("lettuce").style.border = null
-        document.getElementById("watering").style.border = null
-        document.getElementById("apple").style.borderRadius = "10px"
-      }
-      else if (imgType == 'banana') {
-        document.getElementById("apple").style.border = null
-        document.getElementById("banana").style.border = "thin solid #0000FF"
-        document.getElementById("lettuce").style.border = null
-        document.getElementById("watering").style.border = null
-        document.getElementById("banana").style.borderRadius = "10px"
-      }
-      else if (imgType == 'lettuce') {
-        document.getElementById("apple").style.border = null
-        document.getElementById("banana").style.border = null
-        document.getElementById("lettuce").style.border = "thin solid #0000FF"
-        document.getElementById("watering").style.border = null
-        document.getElementById("lettuce").style.borderRadius = "10px"
-      }
-      else if (imgType == 'watering') {
-        document.getElementById("apple").style.border = null
-        document.getElementById("banana").style.border = null
-        document.getElementById("lettuce").style.border = null
-        document.getElementById("watering").style.border = "thin solid #0000FF"
-        document.getElementById("watering").style.borderRadius = "10px"
-      }
-      else if (imgType == 'watering_all') {
-        document.getElementById("apple").style.border = null
-        document.getElementById("banana").style.border = null
-        document.getElementById("lettuce").style.border = null
-        document.getElementById("watering").style.border = null
-        waterAll()
-      }
-    }
-
-    show = (id) => {
-      if (fruitPosition[id] != imgType) {
-        if (imgType == 'apple') {
-          fruitPosition[id] = 'apple'
-          document.getElementById("space" + id).innerHTML = ' <img src="img/apple.png" style="height: 100%; width: 100%;"> '
-        }
-        else if (imgType == 'banana') {
-          fruitPosition[id] = 'banana'
-          document.getElementById("space" + id).innerHTML = ' <img src="img/banana.png" style="height: 100%; width: 100%;"> '
-        }
-        else if (imgType == 'lettuce') {
-          fruitPosition[id] = 'lettuce'
-          document.getElementById("space" + id).innerHTML = ' <img src="img/lettuce.png" style="height: 100%; width: 100%;"> '
-        }
-        else if (imgType == 'watering') {
-          if (waterPosition[id] == 0) {
-            waterPosition[id] = 1
-            document.getElementById("space" + id).style.backgroundColor = "lightblue"
-          } else {
-            waterPosition[id] = 0
-            document.getElementById("space" + id).style.backgroundColor = "antiquewhite"
-          }
-        }
-      }
-      else if (fruitPosition[id] == imgType) {
-        fruitPosition[id] = ''
-        document.getElementById("space" + id).innerHTML = null
-      }
-      show_data()
-    }
-
-    waterAll = () => {
-      if (!waterStatus) {
-        for (var id in waterPosition) {
-          document.getElementById("space" + id).style.backgroundColor = "lightblue";
-          waterPosition[id] = 1
-        }
-        waterStatus = !waterStatus
-      } else {
-        for (var id in waterPosition) {
-          document.getElementById("space" + id).style.backgroundColor = "antiquewhite";
-          waterPosition[id] = 0
-        }
-        waterStatus = !waterStatus
-      }
-      show_data()
-    }
-
-  </script>
-
-  <style>
-    div.imgBox {
-      border: thin solid black;
-      margin-bottom: 20px;
-      margin-top: 20px;
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    div.space {
-      height: 80px;
-      padding: 0px;
-      border: 0.5px solid black;
-      background-color: antiquewhite;
-    }
-
-    div img.imgBar {
-      height: 80px;
-      width: 80px;
-      padding: 5px;
-    }
-  </style>
 
 </body>
 
-<footer style="text-align: center; background-color: #DCDCDC; color: black">
-  <div style="padding: 20px">
-    <i>by Thanapong Somjai (Boy)</i><br>
-    <i>Faculty of Engineering, Chulalongkorn University.</i>
-  </div>
-</footer>
 
+<!-- General JavaScript -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
   crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
   crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
   crossorigin="anonymous"></script>
+<!-- /General JavaScript -->
 
 </html>
+
+<!-- JavaScript for Processing -->
+<script>
+
+  var numSpace = 16  //Number of spaces
+  var waterStatus = false
+  var fruitPosition = []
+  var waterPosition = []
+  var fruitPosition_xy = []
+  var waterPosition_xy = []
+
+  // Creating array for fruitPosition & waterPosition
+  for (var i = 0; i <= numSpace - 1; i++) {
+    fruitPosition.push(null)
+    waterPosition.push(0)
+  }
+
+  //Function for monitor the position of fruits and watering area
+  show_data = () => {
+    document.getElementById("Array_fruits").innerHTML = fruitPosition
+    document.getElementById("Array_water").innerHTML = waterPosition
+  }
+
+  //Function for monitor the JSON data of fruitPosition & waterPosition
+  submit_Data = () => {
+    for (indexFruit in fruitPosition) {
+      if (fruitPosition[indexFruit] != null) {
+        var x_position_fruit = 5 + (indexFruit % 4) * 10
+        var y_position_fruit = 5 + (Math.floor(indexFruit / 4)) * 10
+        fruitPosition_xy.push([x_position_fruit, y_position_fruit])
+      }
+    }
+    var myFruitData = JSON.stringify(fruitPosition_xy) //fruitPosition in JSON
+
+    for (indexWater in waterPosition) {
+      if (waterPosition[indexWater] == 1) {
+        var x_position_water = 5 + (indexWater % 4) * 10
+        var y_position_water = 5 + (Math.floor(indexWater / 4)) * 10
+        waterPosition_xy.push([x_position_water, y_position_water])
+      }
+    }
+    var myWaterData = JSON.stringify(waterPosition_xy) //waterPosition in JSON
+
+
+    document.getElementById("showFruitJSON").innerHTML = myFruitData
+    document.getElementById("showWaterJSON").innerHTML = myWaterData
+  }
+
+  //Function for checking the type of image clicked and the action after clicked
+  imgTypes = (type) => {
+    this.imgType = type
+    if (imgType == 'apple') {
+      document.getElementById("apple").style.border = "thin solid #0000FF"
+      document.getElementById("banana").style.border = null
+      document.getElementById("lettuce").style.border = null
+      document.getElementById("watering").style.border = null
+      document.getElementById("apple").style.borderRadius = "10px"
+    }
+    else if (imgType == 'banana') {
+      document.getElementById("apple").style.border = null
+      document.getElementById("banana").style.border = "thin solid #0000FF"
+      document.getElementById("lettuce").style.border = null
+      document.getElementById("watering").style.border = null
+      document.getElementById("banana").style.borderRadius = "10px"
+    }
+    else if (imgType == 'lettuce') {
+      document.getElementById("apple").style.border = null
+      document.getElementById("banana").style.border = null
+      document.getElementById("lettuce").style.border = "thin solid #0000FF"
+      document.getElementById("watering").style.border = null
+      document.getElementById("lettuce").style.borderRadius = "10px"
+    }
+    else if (imgType == 'watering') {
+      document.getElementById("apple").style.border = null
+      document.getElementById("banana").style.border = null
+      document.getElementById("lettuce").style.border = null
+      document.getElementById("watering").style.border = "thin solid #0000FF"
+      document.getElementById("watering").style.borderRadius = "10px"
+    }
+    else if (imgType == 'watering_all') {
+      document.getElementById("apple").style.border = null
+      document.getElementById("banana").style.border = null
+      document.getElementById("lettuce").style.border = null
+      document.getElementById("watering").style.border = null
+      waterAll()
+    }
+    else if (imgType == 'submit') {
+      document.getElementById("apple").style.border = null
+      document.getElementById("banana").style.border = null
+      document.getElementById("lettuce").style.border = null
+      document.getElementById("watering").style.border = null
+      submit_Data()
+    }
+  }
+
+  //Fuction for show image of fruit or watering area
+  show = (id) => {
+    if (fruitPosition[id] != imgType) {
+      if (imgType == 'apple') {
+        fruitPosition[id] = 'apple'
+        document.getElementById("space" + id).innerHTML = ' <img src="img/apple.png" style="height: 100%; width: 100%;"> '
+      }
+      else if (imgType == 'banana') {
+        fruitPosition[id] = 'banana'
+        document.getElementById("space" + id).innerHTML = ' <img src="img/banana.png" style="height: 100%; width: 100%;"> '
+      }
+      else if (imgType == 'lettuce') {
+        fruitPosition[id] = 'lettuce'
+        document.getElementById("space" + id).innerHTML = ' <img src="img/lettuce.png" style="height: 100%; width: 100%;"> '
+      }
+      else if (imgType == 'watering') {
+        if (waterPosition[id] == 0) {
+          waterPosition[id] = 1
+          document.getElementById("space" + id).style.backgroundColor = "lightblue"
+        } else {
+          waterPosition[id] = 0
+          document.getElementById("space" + id).style.backgroundColor = "antiquewhite"
+        }
+      }
+    }
+    else if (fruitPosition[id] == imgType) {
+      fruitPosition[id] = null
+      document.getElementById("space" + id).innerHTML = null
+    }
+    show_data()
+  }
+
+  //Function for watering all area or not
+  waterAll = () => {
+    if (!waterStatus) {
+      for (var id in waterPosition) {
+        document.getElementById("space" + id).style.backgroundColor = "lightblue";
+        waterPosition[id] = 1
+      }
+      waterStatus = !waterStatus
+    } else {
+      for (var id in waterPosition) {
+        document.getElementById("space" + id).style.backgroundColor = "antiquewhite";
+        waterPosition[id] = 0
+      }
+      waterStatus = !waterStatus
+    }
+    show_data()
+  }
+
+</script>
+<!-- /JavaScript for Processing -->
+
+<!-- Custom Style -->
+<style>
+  div.imgBox {
+    border: thin solid black;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  div.space {
+    height: 80px;
+    padding: 0px;
+    border: 0.5px solid black;
+    background-color: antiquewhite;
+  }
+
+  div img.imgBar {
+    height: 80px;
+    width: 80px;
+    padding: 5px;
+  }
+</style>
+<!-- /Custom Style -->
