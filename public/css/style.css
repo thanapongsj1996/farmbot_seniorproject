@@ -1,0 +1,20 @@
+div.imgBox {
+    border: thin solid black;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  div.space {
+    height: 80px;
+    padding: 0px;
+    border: 0.5px solid black;
+    background-color: antiquewhite;
+  }
+
+  div img.imgBar {
+    height: 80px;
+    width: 80px;
+    padding: 5px;
+  }
