@@ -68,6 +68,7 @@
       <div id='showFruitJSON'></div>
       <div><u>Water Position JSON</u></div>
       <div id='showWaterJSON'></div>
+      <div id="data">_____</div>
     </div>
     <!-- Monitoring Data -->
 
@@ -92,7 +93,32 @@
   crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
   crossorigin="anonymous"></script>
+<script src="https://cdn.netpie.io/microgear.js"></script>
 <script src="javascript/process.js"></script>
-<!-- /General JavaScript -->
+
+<script>
+  const APPID = '';
+  const APPKEY = '';
+  const APPSECRET = '';
+
+  var microgear = Microgear.create({
+    key: APPKEY,
+    secret: APPSECRET
+  });
+
+  microgear.on('message', function (topic, msg) {
+    document.getElementById("data").innerHTML = msg;
+  });
+
+  microgear.on('connected', function () {
+    microgear.setAlias('htmlgear');    /* alias can be renamed anytime with this function */
+    document.getElementById("data").innerHTML = "Now I am connected with netpie...";
+    setInterval(function () {
+      microgear.chat("htmlgear", "Hello from myself at " + Date.now());
+    }, 5000);
+  });
+
+  microgear.connect(APPID);
+</script>
 
 </html>

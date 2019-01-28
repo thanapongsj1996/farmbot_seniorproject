@@ -143,4 +143,6 @@ submit_Data = () => {
   document.getElementById("showFruitJSON").innerHTML = jsonFruit
   document.getElementById("showWaterJSON").innerHTML = jsonWater
   console.log(jsonWater, jsonFruit)
+
+  microgear.publish("/",[jsonFruit, jsonWater]);
 }
