@@ -97,9 +97,9 @@
 <script src="javascript/process.js"></script>
 
 <script>
-  const APPID = '';
-  const APPKEY = '';
-  const APPSECRET = '';
+  const APPID = 'FarmbotProject';
+  const APPKEY = 'b3pe2C13oESZed1';
+  const APPSECRET = 'OMblNqjUT2uRtWiz4oacbGE6u';
 
   var microgear = Microgear.create({
     key: APPKEY,
@@ -114,7 +114,7 @@
     microgear.setAlias('htmlgear');    /* alias can be renamed anytime with this function */
     document.getElementById("data").innerHTML = "Now I am connected with netpie...";
     setInterval(function () {
-      microgear.chat("htmlgear", "Hello from myself at " + Date.now());
+      microgear.chat("htmlgear");
     }, 5000);
   });
 
