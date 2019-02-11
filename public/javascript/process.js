@@ -1,4 +1,4 @@
-var numSpace = 16  //Number of spaces
+var numSpace = 12  //Number of spaces
 var waterStatus = false
 var fruitPosition = []
 var waterPosition = []
@@ -123,8 +123,8 @@ confirm_func = () => {
 submit_Data = () => {
   for (indexFruit in fruitPosition) {
     if (fruitPosition[indexFruit] != null) {
-      var x_position_fruit = 5 + (indexFruit % 4) * 10
-      var y_position_fruit = 5 + (Math.floor(indexFruit / 4)) * 10
+      var x_position_fruit = 175 + (Math.floor(indexFruit / 3)) * 240
+      var y_position_fruit = (indexFruit % 3) * 265
       objectFruit.positions.push([x_position_fruit, y_position_fruit])
     }
   }
@@ -132,8 +132,8 @@ submit_Data = () => {
 
   for (indexWater in waterPosition) {
     if (waterPosition[indexWater] == 1) {
-      var x_position_water = 5 + (indexWater % 4) * 10
-      var y_position_water = 5 + (Math.floor(indexWater / 4)) * 10
+      var x_position_water = 175 + (Math.floor(indexWater / 3)) * 240
+      var y_position_water = (indexWater % 3) * 265
       objectWatering.positions.push([x_position_water, y_position_water])
     }
   }
