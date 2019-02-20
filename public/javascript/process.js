@@ -109,8 +109,8 @@ waterAll = () => {
 
 //Fuction run when user click OK button
 confirm_func = () => {
-  var r = confirm("Comfirm data? You will not be able to edit!")
-  if (r == true) {
+  let r = confirm("Comfirm data? You will not be able to edit!")
+  if (r) {
     document.getElementById("apple").style.border = null
     document.getElementById("banana").style.border = null
     document.getElementById("lettuce").style.border = null
@@ -142,8 +142,21 @@ submit_Data = () => {
 
   document.getElementById("showFruitJSON").innerHTML = jsonFruit
   document.getElementById("showWaterJSON").innerHTML = jsonWater
-  console.log(jsonWater, jsonFruit)
 
-  microgear.publish("/fruit",objectFruit.positions);
-  microgear.publish("/water",objectWatering.positions);
+  microgear.publish("/fruit", objectFruit.positions);
+  microgear.publish("/water", objectWatering.positions);
+  console.log(objectFruit.positions)
+  console.log(objectWatering.positions)
+}
+
+scan_func = () => {
+  let r = confirm("Are you sure to scan?")
+  if (r) {
+    weed_positions = prompt('Input weed positions.')
+    if (weed_positions != '') {
+      alert(weed_positions)
+    } else  {
+      alert('No data')
+    }
+  }
 }

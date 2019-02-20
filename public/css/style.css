@@ -17,4 +17,10 @@ div.imgBox {
     height: 80px;
     width: 80px;
     padding: 5px;
+    border-radius: 10px;
+    transition: 0.2s;
+  }
+
+  div img.imgBar:hover {
+    background-color: #F2F4F4
   }
