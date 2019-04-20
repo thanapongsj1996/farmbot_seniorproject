@@ -108,18 +108,25 @@ waterAll = () => {
 }
 
 //Fuction run when user click OK button
-confirm_func = () => {
-  
+function confirm_func() {
+  $.ajax({
+    url: '/q',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ "name": "boy" }),
+    success: function (response) { }
+  })
+}
   // if (r == '1') {
-    document.getElementById("apple").style.border = null
-    document.getElementById("banana").style.border = null
-    document.getElementById("lettuce").style.border = null
-    document.getElementById("watering").style.border = null
-    submit_Data()
+  // document.getElementById("apple").style.border = null
+  // document.getElementById("banana").style.border = null
+  // document.getElementById("lettuce").style.border = null
+  // document.getElementById("watering").style.border = null
+  // submit_Data()
   // }else{
   //   alert(r)
   // }
-}
+
 
 //Function for monitor the JSON data of fruitPosition & waterPosition
 submit_Data = () => {

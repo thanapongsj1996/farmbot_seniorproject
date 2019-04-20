@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    function ttt(){
+    $.ajax({
+      url: '/q',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ "name": "boyyyyy" }),
+      success: function (response) { }
+    })}
+  </script>
+</head>
+
+<body>
+
+  <button onclick="tttq()">Send an HTTP POST request to a page and get the result back</button>
+
+</body>
+
+</html>
