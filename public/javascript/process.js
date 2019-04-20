@@ -109,14 +109,16 @@ waterAll = () => {
 
 //Fuction run when user click OK button
 confirm_func = () => {
-  let r = confirm("Comfirm data? You will not be able to edit!")
-  if (r) {
+  
+  // if (r == '1') {
     document.getElementById("apple").style.border = null
     document.getElementById("banana").style.border = null
     document.getElementById("lettuce").style.border = null
     document.getElementById("watering").style.border = null
     submit_Data()
-  }
+  // }else{
+  //   alert(r)
+  // }
 }
 
 //Function for monitor the JSON data of fruitPosition & waterPosition
@@ -152,11 +154,16 @@ submit_Data = () => {
 scan_func = () => {
   let r = confirm("Are you sure to scan?")
   if (r) {
-    weed_positions = prompt('Input weed positions.')
-    if (weed_positions != '') {
-      alert(weed_positions)
-    } else  {
-      alert('No data')
-    }
+    microgear.publish("/weed", 'ok');
+    // weed_positions = prompt('Input weed positions.')
+    // if (weed_positions != null && weed_positions != '') {
+    //   console.log(weed_positions)
+    //   alert('Sent data sucessfully!')
+    //   alert(weed_positions)
+    //   microgear.publish("/weed", weed_positions);
+    // } else if (weed_positions == '') {
+    //   alert('No data, please try again later!')
+    // }
   }
 }
+

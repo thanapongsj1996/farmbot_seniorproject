@@ -1,0 +1,27 @@
+{
+  "name": "webbase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mysql": "^2.17.0",
+    "nodemon": "^1.18.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thanapongsj1996/farmbot_seniorproject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thanapongsj1996/farmbot_seniorproject/issues"
+  },
+  "homepage": "https://github.com/thanapongsj1996/farmbot_seniorproject#readme"
+}
