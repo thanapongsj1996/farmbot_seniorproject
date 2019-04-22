@@ -34,16 +34,25 @@
 
   <!-- Working Space -->
   <div class='container' style="margin-bottom:50px;">
-
-    
-      <div class="row">
-        <div class="col-9">
-          <input id="code1" class="form-control" placeholder="Please enter your code" required>
-        </div>
-        <button onclick="checkCode()" class="btn btn-primary col-2">OK</button>
+    <!-- Code input -->
+    <div class="row" style="margin-bottom:10px">
+      <div class="col-md-3"></div>
+      <div class="col-9 col-md-5">
+        <input type="password" id="code" class="form-control" placeholder="Please enter your code">
       </div>
-    
+      <button type="submit" onclick="checkCode()" class="btn btn-secondary col-2 col-md-1">OK</button>
+      <div class="col-md-3"></div>
+    </div>
+    <!-- /Code input -->
 
+    <div class="row" id="username1" hidden>
+      <div class="col-md-3"></div>
+      <div class="alert alert-success col-12 col-md-6"
+        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
+        <strong>Success!</strong> <span id='username2'></span>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
 
     <!-- Image Bar -->
     <div class="col-md-8 offset-md-2 imgBox">
@@ -54,6 +63,7 @@
       <img src="img/wateringAll.png" id="watering_all" onclick="imgTypes('watering_all')" class="imgBar">
       <img src="img/scan.png" id="scan" onclick="scan_func()" class="imgBar">
       <img src="img/check.png" id="submit" onclick="confirm_func()" class="imgBar">
+      <a href="history"><img src="img/history.png" class="imgBar"></a>
     </div>
     <!-- /Image Bar -->
 
@@ -115,6 +125,8 @@
   var waterPosition = []
   var objectFruit = { command: "plat", positions: [] }
   var objectWatering = { command: "water", positions: [] }
+  var code = null
+  var user = null
 
   // Creating array for fruitPosition & waterPosition
   for (var i = 0; i <= numSpace - 1; i++) {
@@ -217,27 +229,37 @@
     }
     show_data()
   }
+  // Function for checking the code to verify user
+  function checkCode() {
+    code = $('#code').val()
+    $.ajax({
+      url: '/checkcode',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ code }),
+      success: function (response) {
+        $('#username1').removeAttr('hidden')
+        $("#username2").html(`<span>Username: ${response.data.name}</span>`);
+        user = { id: response.data.id, name: response.data.name }
+      }
+    })
+  }
 
   //Fuction run when user click SEND button
   function confirm_func() {
-    $.ajax({
-      url: '/q',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify({ "name": "boy" }),
-      success: function (response) { }
-    })
+    var r = confirm('Are you sure to submit data?')
+    if (r) {
+      if (user) {
+        document.getElementById("apple").style.border = null
+        document.getElementById("banana").style.border = null
+        document.getElementById("lettuce").style.border = null
+        document.getElementById("watering").style.border = null
+        submit_Data()
+      } else {
+        alert('Please enter the code to verify user!')
+      }
+    }
   }
-  // if (r == '1') {
-  // document.getElementById("apple").style.border = null
-  // document.getElementById("banana").style.border = null
-  // document.getElementById("lettuce").style.border = null
-  // document.getElementById("watering").style.border = null
-  // submit_Data()
-  // }else{
-  //   alert(r)
-  // }
-
 
   //Function for monitor the JSON data of fruitPosition & waterPosition
   submit_Data = () => {
@@ -245,49 +267,54 @@
       if (fruitPosition[indexFruit] != null) {
         var x_position_fruit = 175 + (Math.floor(indexFruit / 3)) * 240
         var y_position_fruit = (indexFruit % 3) * 265
-        objectFruit.positions.push([x_position_fruit, y_position_fruit])
+        objectFruit.positions.push(JSON.stringify([x_position_fruit, y_position_fruit]))
       }
     }
+    objectFruit.user_id = user.id
     var jsonFruit = JSON.stringify(objectFruit) //fruitPosition in JSON
 
     for (indexWater in waterPosition) {
       if (waterPosition[indexWater] == 1) {
         var x_position_water = 175 + (Math.floor(indexWater / 3)) * 240
         var y_position_water = (indexWater % 3) * 265
-        objectWatering.positions.push([x_position_water, y_position_water])
+        objectWatering.positions.push(JSON.stringify([x_position_water, y_position_water]))
       }
     }
+    objectWatering.user_id = user.id
     var jsonWater = JSON.stringify(objectWatering) //waterPosition in JSON
 
 
     document.getElementById("showFruitJSON").innerHTML = jsonFruit
     document.getElementById("showWaterJSON").innerHTML = jsonWater
 
-    microgear.publish("/fruit", objectFruit.positions);
-    microgear.publish("/water", objectWatering.positions);
-    console.log(objectFruit.positions)
-    console.log(objectWatering.positions)
-  }
+    // microgear.publish("/fruit", objectFruit.positions);
+    // microgear.publish("/water", objectWatering.positions);
 
-  scan_func = () => {
-    let r = confirm("Are you sure to scan?")
-    if (r) microgear.publish("/weed", 'ok');
-  }
-
-  ttt = () => {
     $.ajax({
-      url: '/q',
+      url: '/',
       type: 'POST',
       contentType: 'application/json',
-      data: JSON.stringify({ "name": "boyyyyy" }),
+      data: jsonFruit,
+      success: function (response) { }
+    })
+    $.ajax({
+      url: '/',
+      type: 'POST',
+      contentType: 'application/json',
+      data: jsonWater,
       success: function (response) { }
     })
   }
 
-  function checkCode(){
-    var code = $('#code1').val()
-    if(cade == 1) alert('suc')
-    alert('fail')
+  scan_func = () => {
+    let r = confirm("Are you sure to scan?")
+    if (r) {
+      if (user) {
+        microgear.publish("/weed", 'ok');
+      } else {
+        alert('Please enter the code to verify user!')
+      }
+    }
   }
 
 

@@ -9,66 +9,61 @@ const bodyParser = require('body-parser')
 const conn = mysql.createConnection({
     host: 'thanapong.com',
     user: 'thanapon_5g',
-    password: 'Lz0g89jMC',
+    password: '',
     database: 'thanapon_5g'
 })
 conn.connect()
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.engine('html', ejs.renderFile)
 app.listen(8081)
 
 app.get('/', showPlant)
-app.get('/q', showPlant2)
-app.post('/', checkUser)
-app.post('/q', showTest2)
+app.get('/history', showHistory)
+app.post('/checkcode', checkCode)
+app.post('/', saveData)
 
 app.use(express.static('public'))
-
-
-// function showPlant(req, res) {
-// conn.query('select * from user', (err, result) => {
-//     if (err) return res.status(403).json({ error: err.sqlMessage })
-//     res.render('plant.html', { result })
-//     conn.end()
-// })
-// }
 
 function showPlant(req, res) {
     res.render('plant.html')
 }
-function showPlant2(req, res) {
-    res.render('test.html')
+function showHistory(req, res) {
+    res.render('history.html')
 }
-function checkUser(req, res) {
-    console.log(req.body.code)
-    let code = req.body.code
-    conn.query(`select * from user where code = '${code}'`, (err, result) => {
-        console.log(result)
-        if (err) {
-            return res.json(err)
-        } else {
-            if (result.length > 0) {
-                let data = { msg: 'success' }
-                console.log(JSON.stringify(data));
-                res.json(data);
-            }
-        }
-        res.json({ msg: 'ok' })
-        // if (result == undefined || result.length !=0){
+function saveData(req, res) {
+    const { command, positions, user_id } = req.body
+    _positions = positions.join(',')
 
-        // } else if (result.length == 1) {
-        //     console.log('ok')
-        //     let data = { msg: 'success' }
-        //     console.log(data.msg)
-        //     res.redirect('/?msg=success', data)
-        // }
+    var sql = `insert into farmbot_orders (user_id, command, data) values ('${user_id}', '${command}', '${_positions}');`
+    conn.query(sql, (err, result) => {
+        if (err) {
+            return res.json({
+                message: err
+            })
+        }
+        res.json({ data: 'success' })
     })
-    conn.end()
+
 }
-function showTest2(req, res) {
-    //var { name, city } = req.body
-    console.log(req.body)
-    res.redirect('/')
-    //res.json({ msg: 'okay' })
+function checkCode(req, res) {
+    const { code } = req.body
+    var sql = `select * from farmbot_users where code = '${code}'`
+    console.log(code)
+    conn.query(sql, (err, result) => {
+        if (err) {
+            return res.status(403).json({
+                message: err
+            })
+        }
+        if (result.length > 0) {
+            res.json({
+                data: {
+                    id: result[0].id,
+                    name: result[0].name
+                }
+            })
+        }
+    })
 }
