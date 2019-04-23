@@ -77,6 +77,24 @@
     </div>
     <!-- /Planting Space -->
 
+    <div class="row mt-2" id="sent_position1" hidden>
+      <div class="col-md-3"></div>
+      <div id='sent_position2' class="alert col-12 col-md-6"
+        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
+        <span id='sent_position3'></span>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+
+    <div class="row mt-2" id="scan1" hidden>
+      <div class="col-md-3"></div>
+      <div id='scan2' class="alert col-12 col-md-6"
+        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
+        <span id='scan3'></span>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+
   </div>
   <!-- /Working Space -->
 
@@ -188,7 +206,7 @@
       fruitPosition[id] = null
       document.getElementById("space" + id).innerHTML = null
     }
-    
+
   }
 
   //Function for watering all area or not
@@ -206,7 +224,7 @@
       }
       waterStatus = !waterStatus
     }
-    
+
   }
   // Function for checking the code to verify user
   function checkCode() {
@@ -225,7 +243,7 @@
           if (response.data.status) {
             $('#username1').removeAttr('hidden')
             $("#username2").addClass('alert-success')
-            $("#username3").html(`<span><strong>Success!</strong> Username: ${response.data.name}</span>`)
+            $("#username3").html(`<span> Username: ${response.data.name}</span>`)
             user = { id: response.data.id, name: response.data.name }
           } else {
             $('#username1').removeAttr('hidden')
@@ -292,7 +310,11 @@
       type: 'POST',
       contentType: 'application/json',
       data: jsonWater,
-      success: function (response) { }
+      success: function (response) {
+        $('#sent_position1').removeAttr('hidden')
+        $("#sent_position2").addClass('alert-success')
+        $("#sent_position3").html(`<span><strong>Success!</strong> Robot is planting.</span>`)
+      }
     })
   }
 
@@ -300,7 +322,10 @@
     let r = confirm("Are you sure to scan?")
     if (r) {
       if (user) {
-        microgear.publish("/weed", 'ok');
+        $('#scan1').removeAttr('hidden')
+        $("#scan2").addClass('alert-success')
+        $("#scan3").html(`<span><strong>Success!</strong> Robot is scanning.</span>`)
+        //microgear.publish("/weed", 'ok');
       } else {
         alert('Please enter the code to verify user!')
       }

@@ -6,13 +6,15 @@ const bodyParser = require('body-parser')
 
 
 // DATABASE
-const conn = mysql.createConnection({
-    host: 'thanapong.com',
-    user: 'thanapon_5g',
-    password: '',
-    database: 'thanapon_5g'
-})
-conn.connect()
+// const conn = mysql.createConnection({
+//     host: 'thanapong.com',
+//     user: 'thanapon_5g',
+//     password: '',
+//     database: 'thanapon_5g'
+// })
+// conn.connect()
+const url = 'mysql://thanapon_5g:@thanapong.com/thanapon_5g'
+const conn = mysql.createPool(url)
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -33,7 +35,7 @@ function showPlant(req, res) {
     res.render('plant.html')
 }
 function showHistory(req, res) {
-    var sql = `SELECT farmbot_users.name, farmbot_orders.command, farmbot_orders.positions, farmbot_orders.date from farmbot_orders JOIN farmbot_users ON farmbot_users.id = farmbot_orders.user_id`
+    var sql = `SELECT farmbot_users.name, farmbot_orders.command, farmbot_orders.positions, farmbot_orders.date from farmbot_orders JOIN farmbot_users ON farmbot_users.id = farmbot_orders.user_id order by farmbot_orders.date`
     conn.query(sql, (err, result) => {
         if (err) {
             return res.json({
@@ -63,7 +65,6 @@ function saveData(req, res) {
 function checkCode(req, res) {
     const { code } = req.body
     var sql = `select * from farmbot_users where code = '${code}'`
-    console.log(code)
     conn.query(sql, (err, result) => {
         if (err) {
             return res.status(403).json({
