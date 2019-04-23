@@ -16,17 +16,14 @@
 
 </head>
 
-<body onload="show_data()">
+<body>
 
   <!-- Pagetitle -->
   <div class="jumbotron jumbotron-fluid" style="padding: 20px; text-align: center">
     <div class="container">
       <h1 class="display-4 ">Auto Farming Robot</h1>
-      <h3>[ver : 0.7]</h3>
+      <h3>[ver : 0.8]</h3>
       <hr class="my-4">
-      <!-- <p>Add Scan Button</p>
-      <p>Now we can control the robot by using webbase!</p>
-      <p></p> -->
     </div>
   </div>
   <!-- /Pagetitle -->
@@ -40,7 +37,8 @@
       <div class="col-9 col-md-5">
         <input type="password" id="code" class="form-control" placeholder="Please enter your code">
       </div>
-      <button type="submit" onclick="checkCode()" class="btn btn-secondary col-2 col-md-1">OK</button>
+      <button id="user_button" type="submit" onclick="checkCode()" class="btn btn-secondary col-2 col-md-1"
+        disabled>OK</button>
       <div class="col-md-3"></div>
     </div>
     <!-- /Code input -->
@@ -49,7 +47,7 @@
       <div class="col-md-3"></div>
       <div id='username2' class="alert col-12 col-md-6"
         style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-       <span id='username3'></span>
+        <span id='username3'></span>
       </div>
       <div class="col-md-3"></div>
     </div>
@@ -78,21 +76,6 @@
       <% } %>
     </div>
     <!-- /Planting Space -->
-
-    <!-- Monitoring Data -->
-    <div class="col-md-6 offset-md-3">
-      <br>
-      <div><u>Fruit Position</u></div>
-      <div id='Array_fruits'></div>
-      <div><u>Water Position</u></div>
-      <div id='Array_water'></div>
-      <div><u>Fruit Position JSON</u></div>
-      <div id='showFruitJSON'></div>
-      <div><u>Water Position JSON</u></div>
-      <div id='showWaterJSON'></div>
-      <div id="data">_____</div>
-    </div>
-    <!-- Monitoring Data -->
 
   </div>
   <!-- /Working Space -->
@@ -134,12 +117,6 @@
   for (var i = 0; i <= numSpace - 1; i++) {
     fruitPosition.push(null)
     waterPosition.push(0)
-  }
-
-  //Function for monitor the position of fruits and watering area
-  show_data = () => {
-    document.getElementById("Array_fruits").innerHTML = fruitPosition
-    document.getElementById("Array_water").innerHTML = waterPosition
   }
 
   //Function for checking the type of image clicked and the action after clicked
@@ -211,7 +188,7 @@
       fruitPosition[id] = null
       document.getElementById("space" + id).innerHTML = null
     }
-    show_data()
+    
   }
 
   //Function for watering all area or not
@@ -229,29 +206,35 @@
       }
       waterStatus = !waterStatus
     }
-    show_data()
+    
   }
   // Function for checking the code to verify user
   function checkCode() {
     code = $('#code').val()
-    $.ajax({
-      url: '/checkcode',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify({ code }),
-      success: function (response) {
-        if (response.data.status) {
-          $('#username1').removeAttr('hidden')
-          $("#username2").addClass('alert-success')
-          $("#username3").html(`<span><strong>Success!</strong> Username: ${response.data.name}</span>`)
-          user = { id: response.data.id, name: response.data.name }
-        } else {
-          $('#username1').removeAttr('hidden')
-          $("#username2").addClass('alert-danger')
-          $("#username3").html(`<span><strong>Failed!</strong> Code is incorrect!</span>`)
+    if (!code || code == '') {
+      $('#username1').removeAttr('hidden')
+      $("#username2").addClass('alert-warning')
+      $("#username3").html(`<span><strong>Notification: </strong> Please enter the code!</span>`)
+    } else {
+      $.ajax({
+        url: '/checkcode',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ code }),
+        success: function (response) {
+          if (response.data.status) {
+            $('#username1').removeAttr('hidden')
+            $("#username2").addClass('alert-success')
+            $("#username3").html(`<span><strong>Success!</strong> Username: ${response.data.name}</span>`)
+            user = { id: response.data.id, name: response.data.name }
+          } else {
+            $('#username1').removeAttr('hidden')
+            $("#username2").addClass('alert-danger')
+            $("#username3").html(`<span><strong>Failed!</strong> Code is incorrect!</span>`)
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   //Fuction run when user click SEND button
@@ -293,10 +276,6 @@
     }
     objectWatering.user_id = user.id
     var jsonWater = JSON.stringify(objectWatering) //waterPosition in JSON
-
-
-    document.getElementById("showFruitJSON").innerHTML = jsonFruit
-    document.getElementById("showWaterJSON").innerHTML = jsonWater
 
     // microgear.publish("/fruit", objectFruitNetpie.positions);
     // microgear.publish("/water", objectWateringNetPie.positions);
@@ -347,7 +326,8 @@
 
   microgear.on('connected', function () {
     microgear.setAlias('htmlgear');    /* alias can be renamed anytime with this function */
-    document.getElementById("data").innerHTML = "Now I am connected with netpie...";
+    // document.getElementById("data").innerHTML = "Now I am connected with netpie...";
+    $('#user_button').removeAttr('disabled')
     setInterval(function () {
       microgear.chat("htmlgear");
     }, 5000);

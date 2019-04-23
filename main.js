@@ -21,8 +21,10 @@ app.listen(8081)
 
 app.get('/', showPlant)
 app.get('/history', showHistory)
-app.post('/checkcode', checkCode)
+
 app.post('/', saveData)
+app.post('/checkcode', checkCode)
+
 
 app.use(express.static('public'))
 
@@ -30,13 +32,23 @@ function showPlant(req, res) {
     res.render('plant.html')
 }
 function showHistory(req, res) {
-    res.render('history.html')
+    var sql = `SELECT farmbot_users.name, farmbot_orders.command, farmbot_orders.positions, farmbot_orders.date from farmbot_orders JOIN farmbot_users ON farmbot_users.id = farmbot_orders.user_id`
+    conn.query(sql, (err, result) => {
+        if (err) {
+            return res.json({
+                message: err
+            })
+        }
+     
+        res.render('history.html', {result} )
+    })
+
 }
 function saveData(req, res) {
     const { command, positions, user_id } = req.body
     _positions = positions.join(',')
 
-    var sql = `insert into farmbot_orders (user_id, command, data) values ('${user_id}', '${command}', '${_positions}');`
+    var sql = `insert into farmbot_orders (user_id, command, positions) values ('${user_id}', '${command}', '${_positions}');`
     conn.query(sql, (err, result) => {
         if (err) {
             return res.json({
