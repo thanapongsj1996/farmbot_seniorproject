@@ -60,8 +60,16 @@ function checkCode(req, res) {
         if (result.length > 0) {
             res.json({
                 data: {
+                    status: true,
                     id: result[0].id,
                     name: result[0].name
+                }
+            })
+        } else {
+            res.json({
+                data: {
+                    status: false,
+                    message: 'Code is incorrect.'
                 }
             })
         }

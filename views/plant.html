@@ -47,9 +47,9 @@
 
     <div class="row" id="username1" hidden>
       <div class="col-md-3"></div>
-      <div class="alert alert-success col-12 col-md-6"
+      <div id='username2' class="alert col-12 col-md-6"
         style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <strong>Success!</strong> <span id='username2'></span>
+       <span id='username3'></span>
       </div>
       <div class="col-md-3"></div>
     </div>
@@ -125,6 +125,8 @@
   var waterPosition = []
   var objectFruit = { command: "plat", positions: [] }
   var objectWatering = { command: "water", positions: [] }
+  var objectFruitNetpie = { command: "plat", positions: [] }
+  var objectWateringNetPie = { command: "water", positions: [] }
   var code = null
   var user = null
 
@@ -238,9 +240,16 @@
       contentType: 'application/json',
       data: JSON.stringify({ code }),
       success: function (response) {
-        $('#username1').removeAttr('hidden')
-        $("#username2").html(`<span>Username: ${response.data.name}</span>`);
-        user = { id: response.data.id, name: response.data.name }
+        if (response.data.status) {
+          $('#username1').removeAttr('hidden')
+          $("#username2").addClass('alert-success')
+          $("#username3").html(`<span><strong>Success!</strong> Username: ${response.data.name}</span>`)
+          user = { id: response.data.id, name: response.data.name }
+        } else {
+          $('#username1').removeAttr('hidden')
+          $("#username2").addClass('alert-danger')
+          $("#username3").html(`<span><strong>Failed!</strong> Code is incorrect!</span>`)
+        }
       }
     })
   }
@@ -268,6 +277,7 @@
         var x_position_fruit = 175 + (Math.floor(indexFruit / 3)) * 240
         var y_position_fruit = (indexFruit % 3) * 265
         objectFruit.positions.push(JSON.stringify([x_position_fruit, y_position_fruit]))
+        objectFruitNetpie.positions.push([x_position_fruit, y_position_fruit])
       }
     }
     objectFruit.user_id = user.id
@@ -278,6 +288,7 @@
         var x_position_water = 175 + (Math.floor(indexWater / 3)) * 240
         var y_position_water = (indexWater % 3) * 265
         objectWatering.positions.push(JSON.stringify([x_position_water, y_position_water]))
+        objectWateringNetPie.positions.push([x_position_water, y_position_water])
       }
     }
     objectWatering.user_id = user.id
@@ -287,8 +298,8 @@
     document.getElementById("showFruitJSON").innerHTML = jsonFruit
     document.getElementById("showWaterJSON").innerHTML = jsonWater
 
-    // microgear.publish("/fruit", objectFruit.positions);
-    // microgear.publish("/water", objectWatering.positions);
+    // microgear.publish("/fruit", objectFruitNetpie.positions);
+    // microgear.publish("/water", objectWateringNetPie.positions);
 
     $.ajax({
       url: '/',
