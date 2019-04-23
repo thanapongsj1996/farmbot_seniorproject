@@ -24,6 +24,7 @@ app.get('/history', showHistory)
 
 app.post('/', saveData)
 app.post('/checkcode', checkCode)
+app.post('/register', addUser)
 
 
 app.use(express.static('public'))
@@ -39,8 +40,8 @@ function showHistory(req, res) {
                 message: err
             })
         }
-     
-        res.render('history.html', {result} )
+
+        res.render('history.html', { result })
     })
 
 }
@@ -83,6 +84,34 @@ function checkCode(req, res) {
                     status: false,
                     message: 'Code is incorrect.'
                 }
+            })
+        }
+    })
+}
+
+function addUser(req, res) {
+    const { name, code } = req.body
+    var check_sql = `select name from farmbot_users where name = '${name}' OR code = '${code}'`
+    conn.query(check_sql, (err, result) => {
+        if (err) {
+            return res.json({
+                message: err
+            })
+        } else if (result.length > 0) {
+            res.json({
+                message: 'Name or code has been used.'
+            })
+        } else {
+            var insert_sql = `insert into farmbot_users (name, code) values ('${name}', '${code}')`
+            conn.query(insert_sql, (err, result) => {
+                if(err){
+                    return res.json({
+                        message: err
+                    })
+                }
+                res.json({
+                    message: 'Name and code were inserted.'
+                })
             })
         }
     })
