@@ -31,11 +31,19 @@
 
   <!-- Working Space -->
   <div class='container' style="margin-bottom:50px;">
+    <div class="row mb-2" id="username1" hidden>
+      <div class="col-md-3"></div>
+      <div id='username2' class="alert col-12 col-md-6"
+        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
+        <span id='username3'></span>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
     <!-- Code input -->
     <div class="row" style="margin-bottom:10px">
       <div class="col-md-3"></div>
       <div class="col-9 col-md-5">
-        <input type="password" id="code" class="form-control" placeholder="Please enter your code">
+        <input type="password" id="code" class="form-control" placeholder="Please enter your code" value="">
       </div>
       <button id="user_button" type="submit" onclick="checkCode()" class="btn btn-secondary col-2 col-md-1"
         disabled>OK</button>
@@ -43,11 +51,20 @@
     </div>
     <!-- /Code input -->
 
-    <div class="row" id="username1" hidden>
+    <div class="row mt-2" id="sent_position1" hidden>
       <div class="col-md-3"></div>
-      <div id='username2' class="alert col-12 col-md-6"
+      <div id='sent_position2' class="alert col-12 col-md-6"
         style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <span id='username3'></span>
+        <span id='sent_position3'></span>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+
+    <div class="row mt-2" id="scan1" hidden>
+      <div class="col-md-3"></div>
+      <div id='scan2' class="alert col-12 col-md-6"
+        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
+        <span id='scan3'></span>
       </div>
       <div class="col-md-3"></div>
     </div>
@@ -76,24 +93,6 @@
       <% } %>
     </div>
     <!-- /Planting Space -->
-
-    <div class="row mt-2" id="sent_position1" hidden>
-      <div class="col-md-3"></div>
-      <div id='sent_position2' class="alert col-12 col-md-6"
-        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <span id='sent_position3'></span>
-      </div>
-      <div class="col-md-3"></div>
-    </div>
-
-    <div class="row mt-2" id="scan1" hidden>
-      <div class="col-md-3"></div>
-      <div id='scan2' class="alert col-12 col-md-6"
-        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <span id='scan3'></span>
-      </div>
-      <div class="col-md-3"></div>
-    </div>
 
   </div>
   <!-- /Working Space -->
@@ -241,6 +240,7 @@
         data: JSON.stringify({ code }),
         success: function (response) {
           if (response.data.status) {
+            $('#code').val('')
             $('#username1').removeAttr('hidden')
             $("#username2").addClass('alert-success')
             $("#username3").html(`<span> Username: ${response.data.name}</span>`)
@@ -295,8 +295,8 @@
     objectWatering.user_id = user.id
     var jsonWater = JSON.stringify(objectWatering) //waterPosition in JSON
 
-    // microgear.publish("/fruit", objectFruitNetpie.positions);
-    // microgear.publish("/water", objectWateringNetPie.positions);
+    microgear.publish("/fruit", objectFruitNetpie.positions);
+    microgear.publish("/water", objectWateringNetPie.positions);
 
     $.ajax({
       url: '/',
