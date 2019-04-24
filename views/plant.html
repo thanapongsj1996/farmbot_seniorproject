@@ -275,8 +275,8 @@
   submit_Data = () => {
     for (indexFruit in fruitPosition) {
       if (fruitPosition[indexFruit] != null) {
-        var x_position_fruit = 175 + (Math.floor(indexFruit / 3)) * 240
-        var y_position_fruit = (indexFruit % 3) * 265
+        var x_position_fruit = 350 + (Math.floor(indexFruit / 3)) * 170
+        var y_position_fruit = 100 + (indexFruit % 3) * 150
         objectFruit.positions.push(JSON.stringify([x_position_fruit, y_position_fruit]))
         objectFruitNetpie.positions.push([x_position_fruit, y_position_fruit])
       }
@@ -286,8 +286,8 @@
 
     for (indexWater in waterPosition) {
       if (waterPosition[indexWater] == 1) {
-        var x_position_water = 175 + (Math.floor(indexWater / 3)) * 240
-        var y_position_water = (indexWater % 3) * 265
+        var x_position_water = 350 + (Math.floor(indexWater / 3)) * 170
+        var y_position_water = 100 + (indexWater % 3) * 150
         objectWatering.positions.push(JSON.stringify([x_position_water, y_position_water]))
         objectWateringNetPie.positions.push([x_position_water, y_position_water])
       }
@@ -346,7 +346,7 @@
   });
 
   microgear.on('message', function (topic, msg) {
-    document.getElementById("data").innerHTML = msg;
+    //document.getElementById("data").innerHTML = msg;
   });
 
   microgear.on('connected', function () {
