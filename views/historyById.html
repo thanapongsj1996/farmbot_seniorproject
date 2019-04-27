@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Style -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Prompt">
+
+    <title>History</title>
+
+
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="col-md-4 offset-md-4">
+            <table class="table table-bordered mb-3">
+                <thead>
+                    <tr>
+                        <th scope="col"><%= result[0].name %></th>
+                        <% var date = new Date(result[0].date)
+                            var current_time = date.getTime() - 2.5*60000;
+                            var current_date = new Date()
+                            current_date.setTime(current_time)
+                            var day = current_date.getDate()
+                            var month = current_date.getMonth()
+                            var year = current_date.getFullYear().toString().substr(-2)
+                            var time = current_date.toLocaleTimeString();
+                            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                        %>
+                        <th scope="col"><%= day+' '+months[month]+' '+year+' '+ time %></th>
+                    </tr>
+                </thead>
+            </table>
+            <% for ( var j = 1, m = 0 ; j<=4 ; j++) { %>
+            <div class='row' style="margin:0">
+                <% for (var i = 1; i <= 3; i++) { %>
+                <div id='space<%= m %>' class='col space'>
+                </div>
+                <% m++ } %>
+            </div>
+            <% } %>
+            <a style="text-decoration: none;" href="/history">
+                <button type="button" class="btn btn-secondary btn-lg btn-block mt-3">Back to history</button>
+            </a>
+        </div>
+    </div>
+</body>
+
+
+<!-- General JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.netpie.io/microgear.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    <% 
+    var positions_array = ['350,100', '350,250', '350,400', '520,100', '520,250', '520,400', '690,100', '690,250', '690,400', '860,100', '860,250', '860,400']
+    for (var i in result) {
+        if (result[i].command == 'plant') {
+            if (result[i].positions != '') {
+                var positions = result[i].positions.slice(1, -1).split('],[')
+                for (var j in positions_array) {
+                    if (positions.includes(positions_array[j])) {
+    %>
+                            document.getElementById("space<%= j %>").innerHTML = ' <img src="../img/lettuce.png" style="height: 100%; width: 100%;"> '
+                                <% } 
+                    } 
+            }
+    }
+
+    if (result[i].command == 'water') {
+            if (result[i].positions != '') {
+                var positions = result[i].positions.slice(1, -1).split('],[')
+                for (var j in positions_array) {
+                    if (positions.includes(positions_array[j])) {
+    %>
+                            document.getElementById("space<%= j %>").style.backgroundColor = "lightblue"
+                                <% }
+                    }
+            }
+    }
+
+    } %>
+
+</script>
+
+
+</html>

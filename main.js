@@ -4,7 +4,6 @@ const ejs = require('ejs')
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 
-
 // DATABASE
 // const conn = mysql.createConnection({
 //     host: 'thanapong.com',
@@ -13,6 +12,7 @@ const bodyParser = require('body-parser')
 //     database: 'thanapon_5g'
 // })
 // conn.connect()
+
 const url = 'mysql://thanapon_5g:@thanapong.com/thanapon_5g'
 const conn = mysql.createPool(url)
 
@@ -23,6 +23,8 @@ app.listen(8081)
 
 app.get('/', showPlant)
 app.get('/history', showHistory)
+app.get('/history/:id', showHistoryById)
+app.get('/weed', showWeedPositions)
 
 app.post('/', saveData)
 app.post('/checkcode', checkCode)
@@ -105,7 +107,7 @@ function addUser(req, res) {
         } else {
             var insert_sql = `insert into farmbot_users (name, code) values ('${name}', '${code}')`
             conn.query(insert_sql, (err, result) => {
-                if(err){
+                if (err) {
                     return res.json({
                         message: err
                     })
@@ -116,4 +118,22 @@ function addUser(req, res) {
             })
         }
     })
+}
+
+function showHistoryById(req, res) {
+    var id = 78
+    var sql = `select farmbot_users.name,farmbot_orders.command, farmbot_orders.positions, farmbot_orders.date from farmbot_orders join farmbot_users on farmbot_orders.user_id = farmbot_users.id where farmbot_orders.id = ${id - 1} or farmbot_orders.id = ${id}`
+    conn.query(sql, (err, result) => {
+        if (err) {
+            return res.json({
+                message: err
+            })
+        }
+        console.log(result)
+        res.render('historyById.html', { result })
+    })
+}
+
+function showWeedPositions(req, res) {
+    res.render('weedPositions.html')
 }

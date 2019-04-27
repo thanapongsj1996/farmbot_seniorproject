@@ -22,8 +22,9 @@
   <div class="jumbotron jumbotron-fluid" style="padding: 20px; text-align: center">
     <div class="container">
       <h1 class="display-4 ">Auto Farming Robot</h1>
-      <h3>[ver : 0.8]</h3>
-      <hr class="my-4">
+      <h3>[ver : 0.9]</h3>
+      <h4 id='clock_date'></h4>
+      <h5 id='clock_time'></h5>
     </div>
   </div>
   <!-- /Pagetitle -->
@@ -40,6 +41,7 @@
       <div class="col-md-3"></div>
     </div>
     <!-- Code input -->
+
     <div class="row" style="margin-bottom:10px">
       <div class="col-md-3"></div>
       <div class="col-9 col-md-5">
@@ -49,6 +51,8 @@
         disabled>OK</button>
       <div class="col-md-3"></div>
     </div>
+
+
     <!-- /Code input -->
 
     <div class="row mt-2" id="sent_position1" hidden>
@@ -70,15 +74,13 @@
     </div>
 
     <!-- Image Bar -->
-    <div class="col-md-8 offset-md-2 imgBox">
-      <img src="img/apple.png" id="apple" onclick="imgTypes('apple')" class="imgBar">
-      <img src="img/banana.png" id="banana" onclick="imgTypes('banana')" class="imgBar">
+    <div class="col-md-6 offset-md-3 imgBox" style="display: flex;">
+      <img src="img/apple.png" id="apple" onclick="imgTypes('apple')" class="imgBar" hidden>
+      <img src="img/banana.png" id="banana" onclick="imgTypes('banana')" class="imgBar" hidden>
       <img src="img/lettuce.png" id="lettuce" onclick="imgTypes('lettuce')" class="imgBar">
       <img src="img/watering.png" id="watering" onclick="imgTypes('watering')" class="imgBar">
-      <img src="img/wateringAll.png" id="watering_all" onclick="imgTypes('watering_all')" class="imgBar">
+      <img src="img/wateringAll.png" id="watering_all" onclick="imgTypes('watering_all')" class="imgBar" hidden>
       <img src="img/scan.png" id="scan" onclick="scan_func()" class="imgBar">
-      <img src="img/check.png" id="submit" onclick="confirm_func()" class="imgBar">
-      <a href="history"><img src="img/history.png" class="imgBar"></a>
     </div>
     <!-- /Image Bar -->
 
@@ -91,6 +93,8 @@
         <% m++ } %>
       </div>
       <% } %>
+      <button type="button" class="btn btn-success btn-block mt-3" onclick="confirm_func()">SEND</button>
+      <button type="button" class="btn btn-secondary btn-block mt-1" onclick="location.href='/history'">HISTORY</button>
     </div>
     <!-- /Planting Space -->
 
@@ -123,9 +127,9 @@
   var waterStatus = false
   var fruitPosition = []
   var waterPosition = []
-  var objectFruit = { command: "plat", positions: [] }
+  var objectFruit = { command: "plant", positions: [] }
   var objectWatering = { command: "water", positions: [] }
-  var objectFruitNetpie = { command: "plat", positions: [] }
+  var objectFruitNetpie = { command: "plant", positions: [] }
   var objectWateringNetPie = { command: "water", positions: [] }
   var code = null
   var user = null
@@ -197,7 +201,7 @@
           document.getElementById("space" + id).style.backgroundColor = "lightblue"
         } else {
           waterPosition[id] = 0
-          document.getElementById("space" + id).style.backgroundColor = "antiquewhite"
+          document.getElementById("space" + id).style.backgroundColor = "rgb(224, 224, 196)"
         }
       }
     }
@@ -295,8 +299,8 @@
     objectWatering.user_id = user.id
     var jsonWater = JSON.stringify(objectWatering) //waterPosition in JSON
 
-    microgear.publish("/fruit", objectFruitNetpie.positions);
-    microgear.publish("/water", objectWateringNetPie.positions);
+    // microgear.publish("/fruit", objectFruitNetpie.positions);
+    // microgear.publish("/water", objectWateringNetPie.positions);
 
     $.ajax({
       url: '/',
@@ -325,12 +329,30 @@
         $('#scan1').removeAttr('hidden')
         $("#scan2").addClass('alert-success')
         $("#scan3").html(`<span><strong>Success!</strong> Robot is scanning.</span>`)
+
         //microgear.publish("/weed", 'ok');
       } else {
         alert('Please enter the code to verify user!')
       }
     }
   }
+
+
+  setInterval(function () {
+    var current_time = new Date()
+    var time_hours = current_time.getHours();
+    var time_mins = current_time.getMinutes();
+    var time_sec = current_time.getSeconds();
+    if (time_mins < 10) time_mins = '0' + time_mins
+    if (time_sec < 10) time_sec = '0' + time_sec
+    var time_date = current_time.getDate()
+    var time_month = current_time.getMonth()
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    var time_year = current_time.getFullYear()
+    $('#clock_date').html(`${time_date}  ${months[time_month]}  ${time_year} `)
+    $('#clock_time').html(`${time_hours} : ${time_mins} : ${time_sec}`)
+  }, 1000);
+
 
 
 </script>
