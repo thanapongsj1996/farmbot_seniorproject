@@ -14,12 +14,15 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="weedBox" id='weedBox'>
+    <div class="container">
+        <div class="weedBox mt-5" id='weedBox'>
             <img src="img/lettuce.png" class="weedimg" style="left: 255px; top: 150px;">
             <img src="img/lettuce.png" class="weedimg" style="left: 0px; top: 450px;">
 
         </div>
+        <a style="text-decoration: none;" href="/">
+            <button type="button" class="btn btn-secondary btn-lg btn-block mt-3 col-sm-6 offset-sm-3 col-md-4 offset-md-4">Back to home</button>
+        </a>
     </div>
 </body>
 
@@ -35,7 +38,7 @@
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
 <script>
-    var weed_positions = [[320, 123], [115, 200], [430, 50],[75,50]]
+    var weed_positions = [[320, 123], [115, 200], [430, 50],[75,50.33],[200,170]]
     for (var i in weed_positions) {
         $('#weedBox').append(`<img src="img/apple.png"  class="weedimg" style="top: ${weed_positions[i][0]}px; left: ${weed_positions[i][1]}px;">`)
     }

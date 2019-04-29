@@ -52,7 +52,6 @@
       <div class="col-md-3"></div>
     </div>
 
-
     <!-- /Code input -->
 
     <div class="row mt-2" id="sent_position1" hidden>
@@ -80,6 +79,7 @@
       <img src="img/lettuce.png" id="lettuce" onclick="imgTypes('lettuce')" class="imgBar">
       <img src="img/watering.png" id="watering" onclick="imgTypes('watering')" class="imgBar">
       <img src="img/wateringAll.png" id="watering_all" onclick="imgTypes('watering_all')" class="imgBar" hidden>
+      <img src="img/humidity.png" id="scan" onclick="humidity_func()" class="imgBar">
       <img src="img/scan.png" id="scan" onclick="scan_func()" class="imgBar">
     </div>
     <!-- /Image Bar -->
@@ -95,6 +95,7 @@
       <% } %>
       <button type="button" class="btn btn-success btn-block mt-3" onclick="confirm_func()">SEND</button>
       <button type="button" class="btn btn-secondary btn-block mt-1" onclick="location.href='/history'">HISTORY</button>
+      <button type="button" class="btn btn-info btn-block mt-1" onclick="location.href='/weed'">WEED POSITION</button>
     </div>
     <!-- /Planting Space -->
 
@@ -299,8 +300,8 @@
     objectWatering.user_id = user.id
     var jsonWater = JSON.stringify(objectWatering) //waterPosition in JSON
 
-    // microgear.publish("/fruit", objectFruitNetpie.positions);
-    // microgear.publish("/water", objectWateringNetPie.positions);
+    microgear.publish("/fruit", objectFruitNetpie.positions);
+    microgear.publish("/water", objectWateringNetPie.positions);
 
     $.ajax({
       url: '/',
@@ -317,9 +318,23 @@
       success: function (response) {
         $('#sent_position1').removeAttr('hidden')
         $("#sent_position2").addClass('alert-success')
-        $("#sent_position3").html(`<span><strong>Success!</strong> Robot is planting.</span>`)
+        $("#sent_position3").html(`<span> Robot is planting and watering.</span>`)
       }
     })
+  }
+
+  humidity_func = () => {
+    let r = confirm("Are you sure to measure humidity?")
+    if (r) {
+      if (user) {
+        $('#scan1').removeAttr('hidden')
+        $("#scan2").addClass('alert-success')
+        $("#scan3").html(`<span> Robot is measuring humidity.</span>`)
+        microgear.publish("/humidity", 'ok');
+      } else {
+        alert('Please enter the code to verify user!')
+      }
+    }
   }
 
   scan_func = () => {
@@ -328,7 +343,7 @@
       if (user) {
         $('#scan1').removeAttr('hidden')
         $("#scan2").addClass('alert-success')
-        $("#scan3").html(`<span><strong>Success!</strong> Robot is scanning.</span>`)
+        $("#scan3").html(`<span> Robot is scanning.</span>`)
 
         //microgear.publish("/weed", 'ok');
       } else {
@@ -368,18 +383,25 @@
   });
 
   microgear.on('message', function (topic, msg) {
-    //document.getElementById("data").innerHTML = msg;
+    console.log(topic, msg)
+    if (msg == 'process_success') {
+      $('#sent_position1').attr('hidden', true)
+      alert('Processing sucessful!')
+    } else {
+      if(msg[0] == 'h'){
+        alert('humidity test seccuess!')
+      }
+    }
   });
 
   microgear.on('connected', function () {
-    microgear.setAlias('htmlgear');    /* alias can be renamed anytime with this function */
+    microgear.setAlias('htmlgear');  
     // document.getElementById("data").innerHTML = "Now I am connected with netpie...";
     $('#user_button').removeAttr('disabled')
     setInterval(function () {
-      microgear.chat("htmlgear");
+      microgear.chat("htmlgear")
     }, 5000);
   });
-
   microgear.connect(APPID);
 </script>
 
