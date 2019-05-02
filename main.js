@@ -24,6 +24,7 @@ app.listen(8081)
 app.get('/', showPlant)
 app.get('/history', showHistory)
 app.get('/history/:id', showHistoryById)
+app.get('/moisture', showMoisture)
 app.get('/weed', showWeedPositions)
 
 app.post('/', saveData)
@@ -132,6 +133,10 @@ function showHistoryById(req, res) {
         console.log(result)
         res.render('historyById.html', { result })
     })
+}
+
+function showMoisture(req, res){
+    res.render('moisture.html')
 }
 
 function showWeedPositions(req, res) {

@@ -22,7 +22,7 @@
   <div class="jumbotron jumbotron-fluid" style="padding: 20px; text-align: center">
     <div class="container">
       <h1 class="display-4 ">Auto Farming Robot</h1>
-      <h3>[ver : 0.9]</h3>
+      <h3>[ver : 1.0]</h3>
       <h4 id='clock_date'></h4>
       <h5 id='clock_time'></h5>
     </div>
@@ -54,20 +54,11 @@
 
     <!-- /Code input -->
 
-    <div class="row mt-2" id="sent_position1" hidden>
+    <div class="row mt-2" id="notification1" hidden>
       <div class="col-md-3"></div>
-      <div id='sent_position2' class="alert col-12 col-md-6"
+      <div id='notification2' class="alert col-12 col-md-6"
         style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <span id='sent_position3'></span>
-      </div>
-      <div class="col-md-3"></div>
-    </div>
-
-    <div class="row mt-2" id="scan1" hidden>
-      <div class="col-md-3"></div>
-      <div id='scan2' class="alert col-12 col-md-6"
-        style="padding:10px; width:100%; margin-bottom: 0px; text-align: center">
-        <span id='scan3'></span>
+        <span id='notification3'></span>
       </div>
       <div class="col-md-3"></div>
     </div>
@@ -95,6 +86,8 @@
       <% } %>
       <button type="button" class="btn btn-success btn-block mt-3" onclick="confirm_func()">SEND</button>
       <button type="button" class="btn btn-secondary btn-block mt-1" onclick="location.href='/history'">HISTORY</button>
+      <button type="button" class="btn btn-info btn-block mt-1" onclick="location.href='/moisture'">SOIL
+        MOISTURE</button>
       <button type="button" class="btn btn-info btn-block mt-1" onclick="location.href='/weed'">WEED POSITION</button>
     </div>
     <!-- /Planting Space -->
@@ -104,8 +97,11 @@
 
   <footer style="text-align: center; background-color: #DCDCDC; color: black">
     <div style="padding: 20px">
-      <i>by Thanapong Somjai (Boy)</i><br>
-      <i>Faculty of Engineering, Chulalongkorn University.</i>
+      <h3><i>By FarmBot Senior Project Team</i><br></h3>
+      <i>Ms. Jirapa Tirasaran 5830075121 Department of Mechanical Engineering</i><br>
+      <i>Mr. Araya Thongkhao 5831149121 Department of Mechanical Engineering</i><br>
+      <i>Mr. Thanapong Somjai 5831112921 Department of Electrical Engineering</i><br>
+      <h3><i>Faculty of Engineering, Chulalongkorn University.</i></h3>
     </div>
   </footer>
 
@@ -124,6 +120,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script>
+  // var msgz = `scan[[461, 233], [582, 413], [654, 226], [577, 298], [609, 138], [819, 173], [818, 384]]scan[[520, 100], [690, 250], [860, 400]]`
+  // sessionStorage.setItem("weed_positions", msgz);
+  // var humi = `humidity[100, 200, 300, 400, 500, 600, 700, 800, 900, 800, 700, 600]`
+  // sessionStorage.setItem("humidity", humi);
   var numSpace = 12  //Number of spaces
   var waterStatus = false
   var fruitPosition = []
@@ -316,9 +316,9 @@
       contentType: 'application/json',
       data: jsonWater,
       success: function (response) {
-        $('#sent_position1').removeAttr('hidden')
-        $("#sent_position2").addClass('alert-success')
-        $("#sent_position3").html(`<span> Robot is planting and watering.</span>`)
+        $('#notification1').removeAttr('hidden')
+        $("#notification2").addClass('alert-success')
+        $("#notification3").html(`<span> Robot is planting and watering.</span>`)
       }
     })
   }
@@ -327,9 +327,9 @@
     let r = confirm("Are you sure to measure humidity?")
     if (r) {
       if (user) {
-        $('#scan1').removeAttr('hidden')
-        $("#scan2").addClass('alert-success')
-        $("#scan3").html(`<span> Robot is measuring humidity.</span>`)
+        $('#notification1').removeAttr('hidden')
+        $("#notification2").addClass('alert-success')
+        $("#notification3").html(`<span> Robot is measuring humidity.</span>`)
         microgear.publish("/humidity", 'ok');
       } else {
         alert('Please enter the code to verify user!')
@@ -341,11 +341,11 @@
     let r = confirm("Are you sure to scan?")
     if (r) {
       if (user) {
-        $('#scan1').removeAttr('hidden')
-        $("#scan2").addClass('alert-success')
-        $("#scan3").html(`<span> Robot is scanning.</span>`)
+        $('#notification1').removeAttr('hidden')
+        $("#notification2").addClass('alert-success')
+        $("#notification3").html(`<span> Robot is scanning.</span>`)
 
-        //microgear.publish("/weed", 'ok');
+        microgear.publish("/weed", 'ok');
       } else {
         alert('Please enter the code to verify user!')
       }
@@ -385,17 +385,22 @@
   microgear.on('message', function (topic, msg) {
     console.log(topic, msg)
     if (msg == 'process_success') {
-      $('#sent_position1').attr('hidden', true)
-      alert('Processing sucessful!')
+      $('#notification1').attr('hidden', true)
+      alert('Processing sucessfully!')
     } else {
-      if(msg[0] == 'h'){
-        alert('humidity test seccuess!')
+      if (msg.slice(0, 8) == 'humidity') {
+        alert('Humidity measuring seccuessfully!')
+        sessionStorage.setItem("humidity", msg);
+      } else if (msg.slice(0, 4) == 'scan') {
+        $('#notification1').attr('hidden', true)
+        alert('Scan successfully!')
+        sessionStorage.setItem("weed_positions", msg);
       }
     }
   });
 
   microgear.on('connected', function () {
-    microgear.setAlias('htmlgear');  
+    microgear.setAlias('htmlgear');
     // document.getElementById("data").innerHTML = "Now I am connected with netpie...";
     $('#user_button').removeAttr('disabled')
     setInterval(function () {

@@ -47,10 +47,10 @@
                         if((i+1) % 2 == 1) {    
                     %>
                     <tr>
-                        
+
                         <td rowspan="2"><%= result[i].name %></td>
                         <td><%= result[i].command %></td>
-                        
+
                         <% var date = new Date(result[i].date)
                            var current_time = date.getTime() - 2.5*60000;
                            var current_date = new Date()
@@ -72,7 +72,7 @@
                     <% } else if((i+1) %2 == 0) { %>
                     <tr>
                         <td><%= result[i].command %></td>
-                        
+
                     </tr>
                     <% } %>
                     <% } %>
@@ -105,6 +105,40 @@
     crossorigin="anonymous"></script>
 <script src="https://cdn.netpie.io/microgear.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    const APPID = 'FarmbotProject';
+    const APPKEY = 'b3pe2C13oESZed1';
+    const APPSECRET = 'OMblNqjUT2uRtWiz4oacbGE6u';
+
+    var microgear = Microgear.create({
+        key: APPKEY,
+        secret: APPSECRET
+    });
+
+    microgear.on('message', function (topic, msg) {
+        console.log(topic, msg)
+        if (msg == 'process_success') {
+            alert('Processing sucessfully!')
+        } else {
+            if (msg.slice(0, 8) == 'humidity') {
+                alert('Humidity measuring seccuessfully!')
+                sessionStorage.setItem("humidity", msg);
+            } else if (msg.slice(0, 4) == 'scan') {
+                alert('Scan successfully!')
+                sessionStorage.setItem("weed_positions", msg);
+            }
+        }
+    });
+
+    microgear.on('connected', function () {
+        microgear.setAlias('htmlgear');
+        setInterval(function () {
+            microgear.chat("htmlgear")
+        }, 5000);
+    });
+    microgear.connect(APPID);
+</script>
 
 
 </html>

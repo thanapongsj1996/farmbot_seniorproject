@@ -45,3 +45,9 @@ div.imgBox {
     width: 40px;
     position: absolute;
   }
+
+  div.moisture_space {
+    height: 80px;
+    padding: 0px;
+    border: 0.5px solid 	rgb(168, 60, 60);
+  }

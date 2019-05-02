@@ -11,44 +11,49 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Prompt">
 
-    <title>History</title>
+    <title>Moisture</title>
 
 
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-4">
         <div class="col-md-4 offset-md-4">
-            <table class="table table-bordered mb-3">
-                <thead>
-                    <tr>
-                        <th scope="col"><%= result[0].name %></th>
-                        <% var date = new Date(result[0].date)
-                            var current_time = date.getTime() - 2.5*60000;
-                            var current_date = new Date()
-                            current_date.setTime(current_time)
-                            var day = current_date.getDate()
-                            var month = current_date.getMonth()
-                            var year = current_date.getFullYear().toString().substr(-2)
-                            var time = current_date.toLocaleTimeString();
-                            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-                        %>
-                        <th scope="col"><%= day+' '+months[month]+' '+year+' '+ time %></th>
-                    </tr>
-                </thead>
-            </table>
+            <hr>
+            <div class="row">
+                <div class="col-6">
+                    <p style='padding: 10px; background-color:#1D5191; border-radius: 10px; color: black'>ความชื้นสูงมาก
+                    </p>
+                </div>
+                <div class="col-6">
+                    <p style='padding: 10px; background-color:#4288DD; border-radius: 10px; color: black'>ความชื้นสูง
+                    </p>
+                </div>
+                <div class="col-6">
+                    <p style='padding: 10px; background-color:#B9D62A; border-radius: 10px; color: black'>ความชื้นปกติ
+                    </p>
+                </div>
+                <div class="col-6">
+                    <p style='padding: 10px; background-color:#F54A00; border-radius: 10px; color: black'>ความชื้นต่ำ
+                    </p>
+                </div>
+                <div class="col-6">
+                    <p style='padding: 10px; background-color:#D68213; border-radius: 10px; color: black'>ความชื้นต่ำมาก
+                    </p>
+                </div>
+            </div>
             <hr>
             <% for ( var j = 1, m = 0 ; j<=4 ; j++) { %>
             <div class='row' style="margin:0">
                 <% for (var i = 1; i <= 3; i++) { %>
-                <div id='space<%= m %>' class='col space'>
+                <div id='space<%= m %>' class='col moisture_space' style="background-color: rgb(228, 228, 124);">
                 </div>
                 <% m++ } %>
             </div>
             <% } %>
             <hr>
-            <a style="text-decoration: none;" href="/history">
-                <button type="button" class="btn btn-secondary btn-lg btn-block mt-3">Back to history</button>
+            <a style="text-decoration: none;" href="/">
+                <button type="button" class="btn btn-secondary btn-lg btn-block mt-3">Back to home</button>
             </a>
         </div>
     </div>
@@ -67,37 +72,21 @@
     crossorigin="anonymous"></script>
 <script src="https://cdn.netpie.io/microgear.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script>
-    <% 
-    var positions_array = ['350,100', '350,250', '350,400', '520,100', '520,250', '520,400', '690,100', '690,250', '690,400', '860,100', '860,250', '860,400']
-    for (var i in result) {
-        if (result[i].command == 'plant') {
-            if (result[i].positions != '') {
-                var positions = result[i].positions.slice(1, -1).split('],[')
-                for (var j in positions_array) {
-                    if (positions.includes(positions_array[j])) {
-    %>
-                            document.getElementById("space<%= j %>").innerHTML = ' <img src="../img/lettuce.png" style="height: 100%; width: 100%;"> '
-                                <% }
-                }
-            }
+    var humidity_string = sessionStorage.getItem("humidity")
+    if (humidity_string.length > 8) {
+        var humidity = humidity_string.slice(9, -1).split(', ')
+        for (var i in humidity) {
+            if (humidity[i] <= 650) $(`#space${i}`).css("background-color", "#1D5191")
+            else if (humidity[i] <= 700) $(`#space${i}`).css("background-color", "#4288DD")
+            else if (humidity[i] <= 750) $(`#space${i}`).css("background-color", "#B9D62A")
+            else if (humidity[i] <= 800) $(`#space${i}`).css("background-color", "#F54A00")
+            else $(`#space${i}`).css("background-color", "#D68213")
         }
-
-        if (result[i].command == 'water') {
-            if (result[i].positions != '') {
-                var positions = result[i].positions.slice(1, -1).split('],[')
-                for (var j in positions_array) {
-                    if (positions.includes(positions_array[j])) {
-    %>
-                            document.getElementById("space<%= j %>").style.backgroundColor = "lightblue"
-                                <% }
-                }
-            }
-        }
-
-    } %>
-
+    }
 </script>
+
 <script>
     const APPID = 'FarmbotProject';
     const APPKEY = 'b3pe2C13oESZed1';

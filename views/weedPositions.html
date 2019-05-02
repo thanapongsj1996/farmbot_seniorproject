@@ -15,13 +15,10 @@
 
 <body>
     <div class="container">
-        <div class="weedBox mt-5" id='weedBox'>
-            <img src="img/lettuce.png" class="weedimg" style="left: 255px; top: 150px;">
-            <img src="img/lettuce.png" class="weedimg" style="left: 0px; top: 450px;">
-
-        </div>
+        <div class="weedBox mt-5" id='weedBox'></div>
         <a style="text-decoration: none;" href="/">
-            <button type="button" class="btn btn-secondary btn-lg btn-block mt-3 col-sm-6 offset-sm-3 col-md-4 offset-md-4">Back to home</button>
+            <button type="button"
+                class="btn btn-secondary btn-lg btn-block mt-3 col-sm-6 offset-sm-3 col-md-4 offset-md-4">Back to home</button>
         </a>
     </div>
 </body>
@@ -38,12 +35,51 @@
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
 <script>
-    var weed_positions = [[320, 123], [115, 200], [430, 50],[75,50.33],[200,170]]
+    var positions = sessionStorage.getItem("weed_positions").split('scan')
+    var weed_positions = positions[1].slice(2, -2).split('], [')
+    var plant_positions = positions[2].slice(2, -2).split('], [')
     for (var i in weed_positions) {
-        $('#weedBox').append(`<img src="img/apple.png"  class="weedimg" style="top: ${weed_positions[i][0]}px; left: ${weed_positions[i][1]}px;">`)
+        var position = weed_positions[i].split(', ')
+        $('#weedBox').append(`<img src="img/marijuana.png"  class="weedimg" style="top: ${(position[0] - 350) * (500 / 667)}px; left: ${position[1] * (300 / 552)}px;">`)
+    }
+    for (var i in plant_positions) {
+        var position = plant_positions[i].split(', ')
+        $('#weedBox').append(`<img src="img/lettuce.png"  class="weedimg" style="top: ${(position[0] - 350) * (500 / 667)}px; left: ${position[1] * (300 / 552)}px;">`)
     }
 </script>
+<script>
+    const APPID = 'FarmbotProject';
+    const APPKEY = 'b3pe2C13oESZed1';
+    const APPSECRET = 'OMblNqjUT2uRtWiz4oacbGE6u';
 
+    var microgear = Microgear.create({
+        key: APPKEY,
+        secret: APPSECRET
+    });
+
+    microgear.on('message', function (topic, msg) {
+        console.log(topic, msg)
+        if (msg == 'process_success') {
+            alert('Processing sucessfully!')
+        } else {
+            if (msg.slice(0, 8) == 'humidity') {
+                alert('Humidity measuring seccuessfully!')
+                sessionStorage.setItem("humidity", msg);
+            } else if (msg.slice(0, 4) == 'scan') {
+                alert('Scan successfully!')
+                sessionStorage.setItem("weed_positions", msg);
+            }
+        }
+    });
+
+    microgear.on('connected', function () {
+        microgear.setAlias('htmlgear');
+        setInterval(function () {
+            microgear.chat("htmlgear")
+        }, 5000);
+    });
+    microgear.connect(APPID);
+</script>
 
 
 
