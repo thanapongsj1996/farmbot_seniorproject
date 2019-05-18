@@ -12,7 +12,7 @@ Farmbot web-based need to identify user before control the robot<br />
 ## Planting & Watering
 You can plant and water then the command was send to control the robot.<br />
 Your command will be stored in database also.<br />
-<img src="/public/img/farmbot_home.png" alt="farmbot_home" style="justify-content:center" width="500"/>
+<img src="/public/img/farmbot_home.png" alt="farmbot_home" style="display: block;margin-left: auto;margin-right: auto;" width="500"/>
 <br />
 If the process is successfully, there will be an alert!<br />
 <img src="/public/img/process_alert.jpg" alt="process_alert" justify-content="center" width="350"/>
