@@ -1,5 +1,6 @@
 # Farmbot Senior Project
 ## Control farming robot by using web-based!
+See video here : https://www.youtube.com/watch?v=Iumhdk8x858 <br />
 Mr. Thanapong Somjai Department of Electrical Engineering<br />
 Ms. Jirapa Tirasaran Department of Mechanical Engineering<br />
 Mr. Araya Thongkhao Department of Mechanical Engineering<br />
